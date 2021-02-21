@@ -15,6 +15,7 @@ class linked_list:
 
 #populate linked list with DNS table
 def populate_DNS():
+
     f = open('PROJI-DNSRS.txt , r')
     byte = f.read(1)
 
@@ -76,14 +77,23 @@ def populate_DNS():
 
 
 
-            
+     #searches for host name that was sent in by the client 
+     # if it is found it send back a string of the host with hostname,ip,flag or hostname,NS if not found      
 def searchDNS(self, name ):
 
+    info = ""
     ptr = self.head
     while self.head is not None:
 
-        if(ptr.data == name):
-            print("here")
+        if(ptr.host == name):
+            #host is found now we make the string to return
+            return info + ptr.host + " " + ptr.IP + " " + ptr.Flag 
+
+        ptr =ptr.next #moving ptr to next val
+ 
+    #if it goes out of the while loop the match isnt found 
+
+    return name + " " + "-" + " " + "NS"
 
 
 
@@ -115,3 +125,8 @@ while True:
     clientsocket,address =  s.accept()
     while True:
         data = clientsocket.recv(200).decode
+        Info = searchDNS(data) #returns string to send back to client 
+        #sending back data to client
+        clientsocket.send(Info.encode())
+        break
+    clientsocket.close()
