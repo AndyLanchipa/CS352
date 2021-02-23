@@ -1,7 +1,15 @@
 from sys import argv
 import socket
+import argparse
 
 #creating a two sockets one for rs and one for TS
+
+#argparse package to parse the arguments
+parser = argparse.ArgumentParser(description="""This i s a client program to interact with two servers""")
+parser.add_argument('rsHostname', type=str, help='This is the domain name or ip address of the server', action='store')
+parser.add_argument('rsListenPort', type=int, help='This is the port to connect to the rs server', action='store')
+parser.add_argument('tsListenPort', type=int, help='This is the port to connect to the ts server', action='store')
+args = parser.parse_args(argv[1:])
 
 try:
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -9,7 +17,8 @@ try:
 except socket.error as err:
     print("socket error: ")
     exit()
-server_addr = (argv[1],argv[2]) #connect to rs listen port since we have the host name and port number
+server_addr = (args.rsHostname, args.rsListenPort, args.lsListenPort) #connect to rs listen port since we have the host name and port number
+print(server_addr)
 client_sock.connect(server_addr)
 
 message = input(" -> ")
