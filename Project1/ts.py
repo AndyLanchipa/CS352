@@ -11,7 +11,7 @@ class node:
         self.next = None
 class linked_list:
     def __init__(self):
-        self.head = node()
+        self.head = None
 
 def populate_DNS():
 
@@ -55,6 +55,7 @@ def populate_DNS():
                 #this means that the list is empty then we set the head of the list first
                 DNSlist.head  = node(hostname,ip,flag)
                 temphead  = DNSlist.head
+                print(temphead.host + " " + temphead.IP + " " + temphead.Flag)
                 #reset the values
                 hostname = ""
                 ip = ""
