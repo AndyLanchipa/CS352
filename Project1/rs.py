@@ -117,8 +117,9 @@ s.listen(1)
 
 
 print("waiting.....")
+DNSList = linked_list()
 
-DNSList = populate_DNS #this will populate the linked list with all the dns things
+DNSList.head = populate_DNS #this will populate the linked list with all the dns things
 
 while True:
     print("here")
