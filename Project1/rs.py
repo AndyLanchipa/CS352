@@ -14,7 +14,9 @@ class linked_list:
 
 
 #populate linked list with DNS table
-def populate_DNS():
+def populate_DNS(self):
+
+    
     
     f = open('PROJI-DNSRS.txt' , 'r')
     byte = f.read(1)
@@ -24,8 +26,7 @@ def populate_DNS():
     hostname = ""
     Ip = ""
     flag = ""
-    DNSlist = linked_list()
-    DNSlist.head  = None
+    
 
 
     #disect words
@@ -59,10 +60,10 @@ def populate_DNS():
                 flag = word
                 word = ""
 
-            if(DNSlist.head == None):
+            if(self.head == None):
                 #this means that the list is empty then we set the head of the list first
-                DNSlist.head  = node(hostname,Ip,flag)
-                temphead  = DNSlist.head
+                self.head  = node(hostname,Ip,flag)
+                append(self , hostname,Ip , flag)
                 #reset the values
                 hostname = ""
                 Ip = ""
@@ -71,16 +72,13 @@ def populate_DNS():
                 
             
         
-            temphead.next = node(hostname,Ip,flag)
-            temphead =temphead.next #moving the pointer to the newly added node
-
-            print(temphead.host + " " + temphead.IP + " " + temphead.Flag + "\n\n\n\n\n")
+            append(self , hostname,Ip, flag)
             #reset values 
             hostname = ""
             Ip = ""
             flag = ""
 
-    return DNSlist #return DNS list 
+    return self.head #return DNS list 
 
 
             
@@ -89,30 +87,44 @@ def populate_DNS():
 
      #searches for host name that was sent in by the client 
      # if it is found it send back a string of the host with hostname,ip,flag or hostname,NS if not found      
-def searchDNS(self, name ):
+def searchDNS(self, name):
 
     info = ""
-    ptr = self.head
-    while ptr is not None:
+    temp = self.head
+    while temp is not None:
 
-        if(ptr.host == name):
+        if(temp == name):
             #host is found now we make the string to return
-            return info + ptr.host + " " + ptr.IP + " " + ptr.Flag 
-
-        ptr =ptr.next #moving ptr to next val
+            return info + temp.host + " " + temp.IP + " " + temp.Flag 
+        
+        print(temp.IP + " " + temp.Flag + " " + temp.host)
+        temp = temp.next #moving ptr to next val
+        
  
     #if it goes out of the while loop the match isnt found 
     
     return name + " " + "-" + " " + "NS"
 
+def append(self , host, ip , flag):
+    Node = node(host , ip ,flag)
+
+    if self.head is None:
+        self.head = Node
+        return
+    
+    ptr = self.head
+
+    while (ptr.next):
+        ptr = ptr.next
+
+    ptr.next = Node
+
+    
 
 
 
-DNSList = linked_list()
 
-DNSList.head = populate_DNS() #this will populate the linked list with all the dns things
 
-print("list has been made - > " )
 
 
 
@@ -127,7 +139,7 @@ port_number = int(sys.argv[1])
 s.bind(('',port_number ))
 DNSList = linked_list()
 
-DNSList.head = populate_DNS #this will populate the linked list with all the dns things
+DNSList.head = populate_DNS(DNSList) #this will populate the linked list with all the dns things
 s.listen(1)
 
 
@@ -138,8 +150,13 @@ while True:
     print("here")
     clientsocket,address =  s.accept()
     while True:
-        data = clientsocket.recv(200).decode
-        Info = searchDNS(data) #returns string to send back to client 
+        data = clientsocket.recv(200).decode()
+
+        print(data + "herererer")
+
+        Info = searchDNS(DNSList,data) #returns string to send back to client 
+
+        print("Information : -> " + Info)
         #sending back data to client
         clientsocket.send(Info.encode())
         break

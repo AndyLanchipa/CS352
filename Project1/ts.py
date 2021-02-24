@@ -118,7 +118,7 @@ while True:
 
     while True:
         data = clientsocket.recv(200).decode
-        Info  = searchDNS(DNSList,data)
+        Info  = searchDNS(DNSList.head,data)
         clientsocket.send(Info.encode())
         break
     clientsocket.close()
