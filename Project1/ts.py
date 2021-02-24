@@ -82,7 +82,7 @@ def searchDNS(self, name ):
 
     info = ""
     ptr = self.head
-    while self.head is not None:
+    while ptr is not None:
 
         if(ptr.host == name):
             #host is found now we make the string to return
