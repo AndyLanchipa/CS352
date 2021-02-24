@@ -152,7 +152,7 @@ while True:
     while True:
         data = clientsocket.recv(200).decode()
 
-        print(data + "herererer")
+        print(data + " herererer")
 
         Info = searchDNS(DNSList,data) #returns string to send back to client 
 
