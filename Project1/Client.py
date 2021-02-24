@@ -13,23 +13,25 @@ import sys
 #args = parser.parse_args(argv[1:])
 
 rsHostname = socket.gethostbyname(argv[1])
-#rsListenPort = 0
-#tsListenPort = 0
+print(rsHostname)
+rsListenPort = 0
+tsListenPort = 0
 
 servers = []
 #print(argv)
 modArg = argv[2:]
 for ports in modArg:
     ports = int(ports)
-    host = ("0.0.0.0", ports) 
+    host = (rsHostname, ports) 
+    print(host)
 
     try:
         client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #print("I get here")
-        client_sock.bind(host)            #binding port needs to be >=100
-        #print("I do get here")
-        client_sock.listen(1)
+        print("I get here")
+        client_sock.connect(host)            #binding port needs to be >=100
+        print("I do get here")
+        client_sock.listen(4)
         servers.append(client_sock)
         print("Client created the socket")
     except socket.error as err:
