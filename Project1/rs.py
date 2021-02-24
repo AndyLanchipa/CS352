@@ -15,8 +15,8 @@ class linked_list:
 
 #populate linked list with DNS table
 def populate_DNS():
-
-    f = open('PROJI-DNSRS.txt , r')
+    
+    f = open('PROJI-DNSRS.txt' , 'r')
     byte = f.read(1)
 
     word = ""
@@ -31,19 +31,22 @@ def populate_DNS():
     #disect words
 
     while True:
+        byte = f.read(1)
+        print("byte -> " + byte)
         word += byte
         if(byte == ''):
-            break;
-     
+            break
+          
         if(byte == " "):
+             print("here ")
 
              if(hostname == ""):
                  hostname = word
-                 word = "";
+                 word = ""
                  continue
-             if(ip == ""):
-                 ip = word;
-                 word = "";
+             if(Ip == ""):
+                 Ip = word
+                 word = ""
                  continue
              if(flag == ""):
                  flag = word
@@ -51,23 +54,30 @@ def populate_DNS():
                  continue
         if(byte == "\n"):
             #make a new linked list node and reset the holding values
+
+            if(flag == ""):
+                flag = word
+                word = ""
+
             if(DNSlist.head == None):
                 #this means that the list is empty then we set the head of the list first
-                DNSlist.head  = node(hostname,ip,flag)
+                DNSlist.head  = node(hostname,Ip,flag)
                 temphead  = DNSlist.head
                 #reset the values
                 hostname = ""
-                ip = ""
+                Ip = ""
                 flag = ""
                 continue
                 
-         
-
-            temphead.next = node(hostname,ip,flag)
+            
+        
+            temphead.next = node(hostname,Ip,flag)
             temphead =temphead.next #moving the pointer to the newly added node
+
+            print(temphead.host + " " + temphead.IP + " " + temphead.Flag + "\n\n\n\n\n")
             #reset values 
             hostname = ""
-            ip = ""
+            Ip = ""
             flag = ""
 
     return DNSlist #return DNS list 
@@ -92,14 +102,17 @@ def searchDNS(self, name ):
         ptr =ptr.next #moving ptr to next val
  
     #if it goes out of the while loop the match isnt found 
-
+    
     return name + " " + "-" + " " + "NS"
 
 
 
 
+DNSList = linked_list()
 
+DNSList.head = populate_DNS() #this will populate the linked list with all the dns things
 
+print("list has been made - > " )
 
 
 
@@ -112,14 +125,14 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 port_number = int(sys.argv[1])
 
 s.bind(('',port_number ))
+DNSList = linked_list()
 
+DNSList.head = populate_DNS #this will populate the linked list with all the dns things
 s.listen(1)
 
 
 print("waiting.....")
-DNSList = linked_list()
 
-DNSList.head = populate_DNS #this will populate the linked list with all the dns things
 
 while True:
     print("here")
