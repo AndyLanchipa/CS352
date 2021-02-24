@@ -1,6 +1,7 @@
 from sys import argv
 import socket
 import argparse
+import sys
 
 #creating a two sockets one for rs and one for TS
 
@@ -11,9 +12,9 @@ import argparse
 #parser.add_argument('rsListenPort', type=int, help='This is the port to connect to the ts server', action='store')
 #args = parser.parse_args(argv[1:])
 
-rsHostname=""
-rsListenPort=0
-rsListenPort=0
+rsHostname = socket.gethostbyname(argv[1])
+#rsListenPort = 0
+#tsListenPort = 0
 
 servers = []
 #print(argv)
@@ -21,9 +22,7 @@ modArg = argv[2:]
 for ports in modArg:
     ports = int(ports)
     host = ("0.0.0.0", ports) 
-    #print(ports)
-    #print("Host:")
-    #print(host)
+
     try:
         client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -37,16 +36,18 @@ for ports in modArg:
         print('socket open error: {} \n'.format(err))
         exit()
 
-
-#server_addr = (args.rsHostname, args.rsListenPort, args.lsListenPort) #connect to rs listen port since we have the host name and port number
-#print(server_addr)
-#client_sock.connect(server_addr)
-
-message = input(" -> ")
+# rsHostname = socket.gethostbyname(argv[1])
+# rsListenPort = int(argv[2])
+# tsListenPort = int(argv[3])
+# print(rsHostname)
+# print(rsListenPort)
+# rsServer_addr = (rsHostname, rsListenPort) #connect to rs listen port since we have the host name and port number
+# print(rsServer_addr)
+# client_sock.connect(rsServer_addr)
 
 Disconnect = False #this will be true once we send a disconnect message to other sockets
 
-while message:
+while True:
     print("here")
     response = client_sock.recv(512)
     response = response.decode('utf-8')
