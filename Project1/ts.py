@@ -1,3 +1,4 @@
+from Project1.rs import append
 from os import link
 import socket
 import sys
@@ -13,7 +14,7 @@ class linked_list:
     def __init__(self):
         self.head = None
 
-def populate_DNS():
+def populate_DNS(self):
 
 
     f = open('PROJI-DNSTS.txt' , 'r')
@@ -24,16 +25,18 @@ def populate_DNS():
     hostname = ""
     Ip = ""
     flag = ""
-    DNSlist = linked_list()
-    DNSlist.head  = None
+    
 
 
     #disect words
 
     while True:
         byte = f.read(1)
+
+        if(byte != "\n"):
+            word+=byte
         print("byte -> " + byte)
-        word += byte
+        
         if(byte == ''):
             break
      
@@ -53,15 +56,14 @@ def populate_DNS():
                  continue
         if(byte == "\n"):
             #make a new linked list node and reset the holding values
-            if(DNSlist.head == None):
+            if(self.head == None):
 
                 if(flag == ""):
                     flag = word
                     word = ""
                 #this means that the list is empty then we set the head of the list first
-                DNSlist.head  = node(hostname,Ip,flag)
-                temphead  = DNSlist.head
-                print(temphead.host + " " + temphead.IP + " " + temphead.Flag)
+                self.head  = node(hostname,Ip,flag)
+                append(self,hostname,Ip,flag)
                 #reset the values
                 hostname = ""
                 Ip = ""
@@ -70,45 +72,59 @@ def populate_DNS():
                 
          
 
-            temphead.next = node(hostname,Ip,flag)
-            temphead =temphead.next #moving the pointer to the newly added node
+            append(self , hostname,Ip, flag)
             #reset values 
             hostname = ""
             Ip = ""
             flag = ""
 
-    return DNSlist #return DNS list 
+    return self.head #return DNS list 
 def searchDNS(self, name ):
 
     info = ""
-    ptr = self.head
-    while ptr is not None:
+    temp = self.head
+    while temp is not None:
 
-        if(ptr.host == name):
+        if(temp.host == name):
             #host is found now we make the string to return
-            return info + ptr.host + " " + ptr.IP + " " + ptr.Flag 
+            return info + temp.host + " " + temp.IP + " " + temp.Flag 
 
-        ptr =ptr.next #moving ptr to next val
+        temp = temp.next #moving ptr to next val
  
     #if it goes out of the while loop the match isnt found and return that match isnt found
 
     return name + " - Error:HOST NOT FOUND" 
 
+def append(self , host, ip , flag):
+    Node = node(host , ip ,flag)
 
+    if self.head is None:
+        self.head = Node
+        return
+    
+    ptr = self.head
+
+    while (ptr.next):
+        ptr = ptr.next
+
+    ptr.next = Node
 #creation of socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 port_number = int(sys.argv[1])
 
 s.bind(('',port_number ))
+DNSList = linked_list()
+
+DNSList.head = populate_DNS(DNSList) #this will populate the linked list with all the dns things
 
 s.listen(1)
 
 
 print("waiting.....")
-DNSList = linked_list()
 
-DNSList.head = populate_DNS() #this will populate the linked list with all the dns things
+
+
 
 #running server
 
@@ -117,8 +133,9 @@ while True:
     clientsocket,address = s.accept()
 
     while True:
-        data = clientsocket.recv(200).decode
-        Info  = searchDNS(DNSList.head,data)
+        data = clientsocket.recv(200).decode('utf-8')
+
+        Info  = searchDNS(DNSList,data)
         clientsocket.send(Info.encode())
         break
     clientsocket.close()
