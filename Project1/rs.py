@@ -1,3 +1,4 @@
+from os import close
 import socket
 import sys
 import difflib
@@ -81,7 +82,7 @@ def populate_DNS(self):
             hostname = ""
             Ip = ""
             flag = ""
-
+    f.close()
     return self.head #return DNS list 
 
 
