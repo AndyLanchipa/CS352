@@ -1,4 +1,3 @@
-from Project1.rs import append
 from os import link
 import socket
 import sys
@@ -133,9 +132,9 @@ while True:
     clientsocket,address = s.accept()
 
     while True:
-        data = clientsocket.recv(200).decode('utf-8')
+        data = clientsocket.recv(512).decode('utf-8')
 
         Info  = searchDNS(DNSList,data)
         clientsocket.send(Info.encode())
-        break
+        
     clientsocket.close()

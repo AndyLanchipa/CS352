@@ -168,7 +168,7 @@ while True:
     print("here")
     clientsocket,address =  s.accept()
     while True:
-        data = clientsocket.recv(200).decode('utf-8')
+        data = clientsocket.recv(512).decode('utf-8')
 
         print(data + " herererer")
 
@@ -179,5 +179,5 @@ while True:
         print("Information : -> " + Info)
         #sending back data to client
         clientsocket.send(Info.encode())
-        break
+        #break
     clientsocket.close()
