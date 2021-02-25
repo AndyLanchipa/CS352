@@ -109,7 +109,8 @@ def searchDNS(self, name):
            #     print(u'Delete "{}" from position {}'.format(s[-1],i))
           #  elif s[0]=='+':
             #    print(u'Add "{}" to position {}'.format(s[-1],i))    
-
+        if temp.flag == "NS":
+            Tshostname= temp.flag
         if temp.host.lower() == name.lower():
             #host is found now we make the string to return
            
@@ -122,7 +123,7 @@ def searchDNS(self, name):
  
     #if it goes out of the while loop the match isnt found 
     
-    return name + " " + "-" + " " + "NS"
+    return Tshostname + " " + "-" + " " + "NS"
 
 def append(self , host, ip , flag):
     Node = node(host , ip ,flag)
