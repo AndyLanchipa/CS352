@@ -109,7 +109,7 @@ def searchDNS(self, name):
           #  elif s[0]=='+':
             #    print(u'Add "{}" to position {}'.format(s[-1],i))    
 
-        if temp.host == name:
+        if temp.host.lower() == name.lower():
             #host is found now we make the string to return
            
 
@@ -169,6 +169,9 @@ while True:
     clientsocket,address =  s.accept()
     while True:
         data = clientsocket.recv(512).decode('utf-8')
+
+        if not data :
+            break
 
         print(data + " herererer")
 
