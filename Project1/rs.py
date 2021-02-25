@@ -44,6 +44,7 @@ def populate_DNS(self):
             break
           
         if(byte == " "):
+
              print("here ")
 
              if(hostname == ""):
@@ -110,8 +111,12 @@ def searchDNS(self, name):
            #     print(u'Delete "{}" from position {}'.format(s[-1],i))
           #  elif s[0]=='+':
             #    print(u'Add "{}" to position {}'.format(s[-1],i))    
+
+       
         if temp.Flag == "NS":
             Tshostname= temp.host
+            print("NS ->>>>" + Tshostname)
+            break
         if temp.host.lower() == name.lower():
             #host is found now we make the string to return
            
@@ -123,8 +128,8 @@ def searchDNS(self, name):
         
  
     #if it goes out of the while loop the match isnt found 
-    
-    return Tshostname + " " + "-" + " " + "NS"
+    print("What we return !!!!" + Tshostname + " " + "-" + " " + temp.Flag)
+    return Tshostname + " " + "-" + " " + temp.Flag
 
 def append(self , host, ip , flag):
     Node = node(host , ip ,flag)
