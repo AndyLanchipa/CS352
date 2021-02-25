@@ -1,4 +1,4 @@
-from os import close
+
 import socket
 import sys
 import difflib
@@ -96,7 +96,7 @@ def searchDNS(self, name):
 
     info = ""
     temp = self.head
-     Tshostname=""
+    Tshostname =""
     
     while temp is not None:
        # print("temp host ->"+temp.host + "name -> " + name )
