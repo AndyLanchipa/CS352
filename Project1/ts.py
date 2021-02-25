@@ -84,7 +84,7 @@ def searchDNS(self, name ):
     temp = self.head
     while temp is not None:
 
-        if(temp.host == name):
+        if(temp.host.lower() == name.lower()):
             #host is found now we make the string to return
             return info + temp.host + " " + temp.IP + " " + temp.Flag 
 
@@ -133,6 +133,8 @@ while True:
 
     while True:
         data = clientsocket.recv(512).decode('utf-8')
+        if not data:
+            break
 
         Info  = searchDNS(DNSList,data)
         clientsocket.send(Info.encode())
