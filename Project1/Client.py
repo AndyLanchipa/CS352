@@ -28,7 +28,7 @@ args = parser.parse_args(argv[1:])
 
 #Single socket to connect client to rs server
 try:
-    client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    rs_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print("Client created the socket for RS")
 except socket.error as err:
     print('socket open error: {} \n'.format(err))
@@ -37,8 +37,8 @@ except socket.error as err:
 #Connection being made
 #hostname = 
 server_addr = (args.rsHostname, args.rsListenPort)
-client_sock.connect(server_addr)
-
+rs_sock.connect(server_addr)
+counter = 0
 with open(args.out_file, 'w') as write_file:
 	for line in open(args.in_file, 'r'):
 		#trim the line to avoid weird new line things
@@ -46,51 +46,60 @@ with open(args.out_file, 'w') as write_file:
 		#now we write whatever the server tells us to the out_file
 		if line:            
 			print("The line is: "+line)
-			client_sock.sendall(line.encode('utf-8'))
-			answer = client_sock.recv(512)
+			rs_sock.sendall(line.encode('utf-8'))
+			answer = rs_sock.recv(512)
 			#decode answer
 			answer = answer.decode('utf-8')
 			print("The rec is: "+ answer)
+			#Checks if it ends with an A
 			if(answer.endswith("A")):
 				write_file.write(answer + '\n')
 				print("We wrote it down!")
 			else:
-				client_sock.close()
+				#If RS didn't have the hostname
+				print("\nClient closed the socket for RS")
+				rs_sock.close()
 
+				#Preps socket for 
 				try:
-					client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+					ts_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 					print("\nClient created the socket for TS")
 				except socket.error as err:
 					print('socket open error: {} \n'.format(err))
 					exit()
 				
 				server_addr = (args.rsHostname, args.tsListenPort)
-				client_sock.connect(server_addr)
+				ts_sock.connect(server_addr)
 				print("The line again is: "+line)
-				client_sock.sendall(line.encode('utf-8'))
-				answer = client_sock.recv(200)
+				ts_sock.sendall(line.encode('utf-8'))
+				answer = ts_sock.recv(512)
 				#decode answer
 				answer = answer.decode('utf-8')
 				write_file.write(answer + '\n')
-				print("The answer has been written: "+ answer)
-				client_sock.close()
+				print("The ts answer has been written: "+ answer)
+				ts_sock.close()
+				print("\nClient closed the socket for TS")
 
 				try:
-					client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+					rs_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 					print("\nClient created the socket for RS")
 				except socket.error as err:
 					print('socket open error: {} \n'.format(err))
 					exit()
 				
 				server_addr = (args.rsHostname, args.rsListenPort)
-				client_sock.connect(server_addr)
+				rs_sock.connect(server_addr)
+		counter+=1
+		print("The counter is at: "+str(counter))
+
 
 
 #close the socket (note this will be visible to the other side)
-# if(write_file.closed == False):
-# 	print("File has not closed")
+if(write_file.closed == False):
+	print("File has not closed")
+print("The socket will close")
+rs_sock.close()
 
-client_sock.close()
 # while True:
 #     print("here")
 #     response = client_sock.recv(512)
