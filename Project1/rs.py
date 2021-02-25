@@ -96,6 +96,7 @@ def searchDNS(self, name):
 
     info = ""
     temp = self.head
+     Tshostname=""
     
     while temp is not None:
        # print("temp host ->"+temp.host + "name -> " + name )
