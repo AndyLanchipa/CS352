@@ -55,37 +55,35 @@ with open(args.out_file, 'w') as write_file:
 				write_file.write(answer + '\n')
 				print("We wrote it down!")
 			else:
-				print("damn")
-			# else:
-			# 	client_sock.close()
+				client_sock.close()
 
-			# 	try:
-			# 		client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			# 		print("\nClient created the socket for TS")
-			# 	except socket.error as err:
-			# 		print('socket open error: {} \n'.format(err))
-			# 		exit()
+				try:
+					client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+					print("\nClient created the socket for TS")
+				except socket.error as err:
+					print('socket open error: {} \n'.format(err))
+					exit()
 				
-			# 	server_addr = (args.rsHostname, args.tsListenPort)
-			# 	client_sock.connect(server_addr)
-			# 	print("The line again is: "+line)
-			# 	client_sock.sendall(line.encode('utf-8'))
-			# 	answer = client_sock.recv(200)
-			# 	#decode answer
-			# 	answer = answer.decode('utf-8')
-			# 	write_file.write(answer + '\n')
-			# 	print("The answer has been written: "+ answer)
-			# 	client_sock.close()
+				server_addr = (args.rsHostname, args.tsListenPort)
+				client_sock.connect(server_addr)
+				print("The line again is: "+line)
+				client_sock.sendall(line.encode('utf-8'))
+				answer = client_sock.recv(200)
+				#decode answer
+				answer = answer.decode('utf-8')
+				write_file.write(answer + '\n')
+				print("The answer has been written: "+ answer)
+				client_sock.close()
 
-			# 	try:
-			# 		client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			# 		print("\nClient created the socket for RS")
-			# 	except socket.error as err:
-			# 		print('socket open error: {} \n'.format(err))
-			# 		exit()
+				try:
+					client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+					print("\nClient created the socket for RS")
+				except socket.error as err:
+					print('socket open error: {} \n'.format(err))
+					exit()
 				
-			# 	server_addr = (args.rsHostname, args.rsListenPort)
-			# 	client_sock.connect(server_addr)
+				server_addr = (args.rsHostname, args.rsListenPort)
+				client_sock.connect(server_addr)
 
 
 #close the socket (note this will be visible to the other side)
