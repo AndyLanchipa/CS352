@@ -33,7 +33,7 @@ def populate_DNS(self):
     while True:
         byte = f.read(1)
 
-        if(byte != "\n"):
+        if(byte != "\n"or byte!= " "):
             word+=byte
         print("byte -> " + byte)
         
@@ -43,15 +43,15 @@ def populate_DNS(self):
         if(byte == " "):
 
              if(hostname == ""):
-                 hostname = word
+                 hostname = word.strip()
                  word = ""
                  continue
              if(Ip == ""):
-                 Ip = word
+                 Ip = word.strip()
                  word = ""
                  continue
              if(flag == ""):
-                 flag = word
+                 flag = word.strip()
                  word = ""
                  continue
         if(byte == "\n"):
@@ -59,7 +59,7 @@ def populate_DNS(self):
             if(self.head == None):
 
                 if(flag == ""):
-                    flag = word
+                    flag = word.strip()
                     word = ""
                 #this means that the list is empty then we set the head of the list first
                 self.head  = node(hostname,Ip,flag)

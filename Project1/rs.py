@@ -1,6 +1,6 @@
 import socket
 import sys
-
+import difflib
 class node:
     def __init__(self, host, IP, Flag):
         self.host = host
@@ -34,7 +34,8 @@ def populate_DNS(self):
     while True:
         byte = f.read(1)
         print("byte -> " + byte)
-        if(byte != "\n"):
+        if(byte != "\n" or byte!= " "):
+            print("found a new line or space !!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
             word+=byte
 
         
@@ -45,22 +46,22 @@ def populate_DNS(self):
              print("here ")
 
              if(hostname == ""):
-                 hostname = word
+                 hostname = word.strip()
                  word = ""
                  continue
              if(Ip == ""):
-                 Ip = word
+                 Ip = word.strip()
                  word = ""
                  continue
              if(flag == ""):
-                 flag = word
+                 flag = word.strip()
                  word = ""
                  continue
         if(byte == "\n"):
             #make a new linked list node and reset the holding values
 
             if(flag == ""):
-                flag = word
+                flag = word.strip()
                 word = ""
 
             if(self.head == None):
@@ -94,14 +95,24 @@ def searchDNS(self, name):
 
     info = ""
     temp = self.head
+    
     while temp is not None:
-        print("temp host ->"+temp.host + "name -> " + name )
-        print("i")
+       # print("temp host ->"+temp.host + "name -> " + name )
+       # print("Temp:" + str(temp.host))
+       # print("Name: " + name)
+      #  print("The difference should be: ")
+      #  print('{} => {}'.format(str(temp.host),name))
+       # for i,s in enumerate(difflib.ndiff(str(temp.host), name)):
+        #    if s[0]==' ': continue
+         #   elif s[0]=='-':
+           #     print(u'Delete "{}" from position {}'.format(s[-1],i))
+          #  elif s[0]=='+':
+            #    print(u'Add "{}" to position {}'.format(s[-1],i))    
 
         if temp.host == name:
             #host is found now we make the string to return
+           
 
-            print("match was found -> !!!!")
             return info + temp.host + " " + temp.IP + " " + temp.Flag 
         
         print(temp.IP + " " + temp.Flag + " " + temp.host)
