@@ -55,11 +55,10 @@ def populate_DNS(self):
                  continue
         if(byte == "\n"):
             #make a new linked list node and reset the holding values
-            if(self.head == None):
-
-                if(flag == ""):
+            if(flag == ""):
                     flag = word.strip()
                     word = ""
+            if(self.head == None):
                 #this means that the list is empty then we set the head of the list first
                 self.head  = node(hostname,Ip,flag)
                 append(self,hostname,Ip,flag)
