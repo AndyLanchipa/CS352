@@ -109,7 +109,7 @@ def searchDNS(self, name):
            #     print(u'Delete "{}" from position {}'.format(s[-1],i))
           #  elif s[0]=='+':
             #    print(u'Add "{}" to position {}'.format(s[-1],i))    
-        if temp.flag == "NS":
+        if temp.Flag == "NS":
             Tshostname= temp.flag
         if temp.host.lower() == name.lower():
             #host is found now we make the string to return
