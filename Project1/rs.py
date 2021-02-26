@@ -84,6 +84,9 @@ def populate_DNS(self):
             Ip = ""
             flag = ""
     f.close()
+    if(flag != "" and Ip !="" and hostname != ""):
+        append(self , hostname,Ip, flag)
+
     return self.head #return DNS list 
 
 
