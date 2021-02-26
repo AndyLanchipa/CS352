@@ -28,15 +28,15 @@ def populate_DNS(self):
     Ip = ""
     flag = ""
     
-
+    space = False
 
     #disect words
 
     while True:
         byte = f.read(1)
-        print("byte -> " + byte)
+        
         if(byte != "\n" or byte!= " "):
-            print("found a new line or space !!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+            
             word+=byte
 
         
@@ -44,19 +44,23 @@ def populate_DNS(self):
             break
           
         if(byte == " "):
+             space = True
 
-             print("here ")
+             
 
              if(hostname == ""):
                  hostname = word.strip()
+                 
                  word = ""
                  continue
              if(Ip == ""):
                  Ip = word.strip()
+                 
                  word = ""
                  continue
              if(flag == ""):
                  flag = word.strip()
+                 
                  word = ""
                  continue
         if(byte == "\n"):
@@ -103,22 +107,11 @@ def searchDNS(self, name):
     Tshostname =""
     
     while temp is not None:
-       # print("temp host ->"+temp.host + "name -> " + name )
-       # print("Temp:" + str(temp.host))
-       # print("Name: " + name)
-      #  print("The difference should be: ")
-      #  print('{} => {}'.format(str(temp.host),name))
-       # for i,s in enumerate(difflib.ndiff(str(temp.host), name)):
-        #    if s[0]==' ': continue
-         #   elif s[0]=='-':
-           #     print(u'Delete "{}" from position {}'.format(s[-1],i))
-          #  elif s[0]=='+':
-            #    print(u'Add "{}" to position {}'.format(s[-1],i))    
-
+       
        
         if temp.Flag == "NS":
             Tshostname= temp.host
-            print("NS ->>>>" + Tshostname)
+            
             break
         if temp.host.lower() == name.lower():
             #host is found now we make the string to return
@@ -131,7 +124,7 @@ def searchDNS(self, name):
         
  
     #if it goes out of the while loop the match isnt found 
-    print("What we return !!!!" + Tshostname + " " + "-" + " " + temp.Flag)
+    
     return Tshostname + " " + "-" + " " + temp.Flag
 
 def append(self , host, ip , flag):
@@ -176,7 +169,7 @@ print("waiting.....")
 
 
 while True:
-    print("here")
+    
     clientsocket,address =  s.accept()
     while True:
         data = clientsocket.recv(512).decode('utf-8')
@@ -184,13 +177,13 @@ while True:
         if not data :
             break
 
-        print(data + " herererer")
+        
 
         name  = str(data)
 
         Info = searchDNS(DNSList,name) #returns string to send back to client 
 
-        print("Information : -> " + Info)
+        
         #sending back data to client
         clientsocket.send(Info.encode())
         #break
