@@ -34,7 +34,7 @@ def populate_DNS(self):
 
         if(byte != "\n"or byte!= " "):
             word+=byte
-        print("byte -> " + byte)
+        
         
         if(byte == ''):
             break
@@ -84,10 +84,10 @@ def searchDNS(self, name ):
     info = ""
     temp = self.head
     while temp is not None:
-        print(temp.host + " ->>>> " + name)
+        
         if(temp.host.lower() == name.lower()):
             #host is found now we make the string to return
-            print("made it in here")
+            
 
             
             return info + temp.host + " " + temp.IP + " " + temp.Flag 
@@ -132,7 +132,7 @@ print("waiting.....")
 #running server
 
 while True:
-    print ("here")
+    
     clientsocket,address = s.accept()
 
     while True:
@@ -142,7 +142,7 @@ while True:
         
      
         Info  = searchDNS(DNSList,data)
-        print("info_>>>>   "+ Info)
+        
         clientsocket.send(Info.encode())
         
     clientsocket.close()
