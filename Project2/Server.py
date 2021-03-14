@@ -18,3 +18,24 @@ def send_udp_message(message, address, port):
 
     #we want to parse rd lenght to get the length of how many ip adresses were sent back and you do this by masking 
     
+
+def convert_address(server_address):
+
+    hexform = ""
+
+    c = ""
+
+    for i in range(len(server_address)):
+        c = server_address[i]
+        #converting to ascii
+        hold = ord(c)
+        #convert hex and take off 0x from hex to soley get the number and put it into the hexform string
+        temp = hex(hold).lstrip("0x")
+
+        hexform += temp
+
+    return hexform
+
+
+
+
