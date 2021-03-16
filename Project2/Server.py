@@ -38,23 +38,26 @@ def convert_address(server_address):
     return hexform
 
 
-def rec_udp_message():  #currently does not connect to client. Asked question on discord for help/clarification
-    #message = message.replace(" ","").replace("\n","")
-    lhost = "127.0.0.1"
+def rec_client_message():  #Assuming connection with client is TCP and connection with Google is UDP
+
+    #lhost = "127.0.0.1"
     port = int(sys.argv[1])
     server_address = ('', port)
-    print("I get here")
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    print("I get here 1")
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(server_address)
-    
-    #conn, address = sock.accept()
-    
-    print("I get here 2")
-    while True:
-        print("I get here 3")
-        data = sock.recvfrom(4096)#does not reach here
-        #print("Connection from: "+ str(addr))
-        print("received message: %s" % data)
+    sock.listen(1)
+    print("Server port initiated: "+ str(port))
 
-rec_udp_message()
+    while True:
+        #data = sock.recvfrom(4096)#does not reach here
+        conn, address = sock.accept()
+        print("Connection from: "+ str(address))
+        while True:
+            data = conn.recv(10240).decode()
+            if( not data):
+                break
+
+            #maybe here we want to take the link address then convert it to hex, then send it via udp then we can send it back
+            #may want to consider a data structure to hold the addresses and respective responses
+
+rec_client_message()
