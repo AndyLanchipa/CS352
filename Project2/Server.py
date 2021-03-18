@@ -80,31 +80,34 @@ def rec_client_message():  #Assuming connection with client is TCP and connectio
             
             tempArr = data.split(".")
 
+            print("The temp array is: ", tempArr)
+
             if(tempArr[0] == "www"):    #skips over www.
                 addressArr = tempArr[1:]
             else:
                 addressArr = tempArr
+            
+            fulldomain = ""
+            count = 0
+            while count < len(addressArr):
+                fulldomain = fulldomain + str(hex(len(addressArr[count]))[2:]).zfill(2) + convert_address(addressArr[count])
+                count= count+1
+            
+            print("The length of the full domain: "+ str(len(fulldomain)) + "\tFull domain in hex: "+ fulldomain)
 
-            countdomain =  str(hex(len(addressArr[0]))[2:]).zfill(2)
-            countend = str(hex(len(addressArr[1]))[2:]).zfill(2)
-            domain = convert_address(addressArr[0])
-            end = convert_address(addressArr[1])
-            end = end + "00"
-
-            print("Length of domain: "+ countdomain + "\tDomain in hex: "+ domain)
-            print("Length of end: "+ countend + "\tEnd in hex: "+ end)
-            message = header + countdomain + domain + countend + end + "00010001"
+            message = header + fulldomain+ "0000010001"
             print("The message is: "+ message)
             msgSize = len(message)
             response = send_udp_message(message, "8.8.8.8", 53)
             print("We get here")
             print("The response is: "+response)
             
-            print("Formated hex response: "+format_hex(response))
+            print("Formated hex response:\n"+format_hex(response))
 
             resData = response[msgSize+20:]
             resLen = int(resData[:4])
             resData = resData[4:]
+
             print("The Rlength is: ")
             print(resLen)
             print("Response IP")
