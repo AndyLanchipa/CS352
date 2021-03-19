@@ -43,10 +43,9 @@ def format_hex(hex):
     pairs = [" ".join(octets[i:i+2]) for i in range(0, len(octets), 2)]
     return "\n".join(pairs)
 
-def format_to_ip(iplength, hexval):     #currently works for only one IP
-    hexsize = 2     #size per hex value
+def format_to_ip(hexval):     #currently works for only one IP
     ip = ""         #ip array for values
-    #for i in range(len(hexval)):
+
     while hexval:
         temp = str(int(hexval[:2], 16))
         hexval = hexval[2:]
@@ -78,45 +77,66 @@ def rec_client_message():  #Assuming connection with client is TCP and connectio
                 break
             print("The data is: " + data)
             
-            tempArr = data.split(".")
+            # tempArr = data.split(".")
 
-            print("The temp array is: ", tempArr)
+            # print("The temp array is: ", tempArr)
 
-            if(tempArr[0] == "www"):    #skips over www.
-                addressArr = tempArr[1:]
-            else:
-                addressArr = tempArr
+            # if(tempArr[0] == "www"):    #skips over www.
+            #     addressArr = tempArr[1:]
+            # else:
+            #     addressArr = tempArr
+            
+            # fulldomain = ""
+            # count = 0
+            # while count < len(addressArr):
+            #     fulldomain = fulldomain + str(hex(len(addressArr[count]))[2:]).zfill(2) + convert_address(addressArr[count])
+            #     count = count+1
+
+            addressArr = data.split(".")
+
+            #print("The temp array is: ", tempArr)
             
             fulldomain = ""
             count = 0
             while count < len(addressArr):
                 fulldomain = fulldomain + str(hex(len(addressArr[count]))[2:]).zfill(2) + convert_address(addressArr[count])
-                count= count+1
+                count = count+1
             
             print("The length of the full domain: "+ str(len(fulldomain)) + "\tFull domain in hex: "+ fulldomain)
 
             message = header + fulldomain+ "0000010001"
-            print("The message is: "+ message)
+            print("The message is:\t\t"+ message)
             msgSize = len(message)
             response = send_udp_message(message, "8.8.8.8", 53)
-            print("We get here")
-            print("The response is: "+response)
+
+            print("The response is:\t"+response)
             
             print("Formated hex response:\n"+format_hex(response))
 
-            resData = response[msgSize+20:]
-            resLen = int(resData[:4])
-            resData = resData[4:]
+            resData = response[msgSize:]
+            finIP = ""
+            counter = int(msgSize)
+            #print("The message size is ", counter)
+            while counter < len(response):
+                resData = resData[20:]
+                counter = counter + 20
+                size = int(resData[:4], 16) * 2
 
-            print("The Rlength is: ")
-            print(resLen)
-            print("Response IP")
-            print(resData)
-            ip = format_to_ip(resLen, resData)
-            print("The ip is:")
-            print(ip)
-            conn.sendall(ip.encode())
-            #assuming the data before RDLENGTH is unnecessary
+                counter = counter + 4
+                resData = resData[4:]
+                data = resData[:size]
+                resData = resData[size:]
+                counter = counter + size
+                if(size != 8):
+                    theIP = "OTHER"
+                else:
+                    theIP = format_to_ip(data)
+                finIP = finIP + theIP + ","
+
+
+            finIP = finIP[:-1]
+            print("The finIP is: " + finIP)
+            conn.sendall(finIP.encode())
             
 
 
