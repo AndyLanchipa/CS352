@@ -4,7 +4,7 @@ import sys
 from typing import Counter
 
 
-
+#this send_udp_message method was found on https://routley.io/posts/hand-writing-dns-messages/ and used by us for the sending and recieving to the udp
 def send_udp_message(message, address, port):
     #message = message.replace(" ","").replace("\n","")
     server_address = (address, port)
