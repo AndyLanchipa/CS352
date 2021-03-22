@@ -1,7 +1,7 @@
 import binascii
 import socket
 import sys
-from typing import Counter
+
 
 
 #this send_udp_message method was found on https://routley.io/posts/hand-writing-dns-messages/ and used by us for the sending and recieving to the udp
