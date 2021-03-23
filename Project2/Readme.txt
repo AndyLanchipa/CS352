@@ -6,7 +6,7 @@
 
 -------------------------------------------------------
 2. The problems we faced were understanding how to udp and how to send over the header and understand what we were recieving.
-Furthermore, breaking down the recieved messaged caused troubles due to lack of knowledge on how info is sent back from google udp.
+Furthermore, breaking down the recieved messaged caused troubles due to lack of knowledge on how info is sent back and then also determining how many Ip address there were.
 we have spent around 5 days on this project.
 
 Cited Resources:
