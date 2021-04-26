@@ -147,7 +147,7 @@ def get_IP(data):
 
 
 
-def recv_message():
+
 
     port = int(sys.argv[1])
     server_address =('', port)
@@ -163,32 +163,40 @@ def recv_message():
 
 
     #make server run forever until the socket is closed
-
     while True:
+            while True:
 
-        lssocket,address = sock.accept()
+             lssocket,address = sock.accept()
 
-        #this will recieve the host name and check the ts dns table if it contains it if not contact domain name server
-        #to get the ip addresses
-        data = lssocket.recv(10240).decode()
-        if not data:
-            break
-        print("data: " + data)
+             #this will recieve the host name and check the ts dns table if it contains it if not contact domain name server
+             #to get the ip addresses
+             data = lssocket.recv(10240).decode()
+             if not data:
+                 break
+             print("data: " + data)
 
-        if DNSList is None:
-            #need to ask the dns server for its ip 
-            finIP = get_IP(data)
+             if DNSList is None:
+              #need to ask the dns server for its ip 
+                 finIP = get_IP(data)
 
-            #store host and ip in dns table
+                 #store host and ip in dns table
 
-            DNSList.head = add_DNS(DNSList,data,finIP)
-        elif DNSList is not None:
+                 DNSList.head = add_DNS(DNSList,data,finIP)
+             elif DNSList is not None:
 
-            temp = searchDNS(DNSList, data)
+              temp = searchDNS(DNSList, data)
 
-            if temp is None:
-                #host is not found in local dns table call up the domain name server to get ip
-                finIP = get_IP(data)
+              if temp is None:
+                 #host is not found in local dns table call up the domain name server to get ip
+                 finIP = get_IP(data)
+                 #got the ip adress send over ip to ls
+
+                 message = finIP
+                 lssocket.sendall(message.encode())
+             else: 
+                 #send over ip to ls
+                 message =temp.IP
+                 lssocket.sendall(message.encode())
             
 
 
