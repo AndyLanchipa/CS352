@@ -108,6 +108,7 @@ def get_IP(data):
         count += 1
         message = header + fulldomain + "0000010001"
         msgSize = len(message)
+        #we are asking google for TS1 and for TS2 using cloudflare
         response = send_udp_message(message,"8.8.8.8", 546)
         print("The response is:\t"+response)
             
@@ -197,6 +198,8 @@ def get_IP(data):
                  #send over ip to ls
                  message =temp.IP
                  lssocket.sendall(message.encode())
+      
+            lssocket.close()
             
 
 
@@ -213,31 +216,3 @@ def get_IP(data):
 
 
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#recieving client message and setting up sockets
