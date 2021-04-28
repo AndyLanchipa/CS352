@@ -49,7 +49,7 @@ while True:
 
         if temp % 2 == 0:
 
-            print("hash function is sending load to TS1")
+            print("hash function setting load to TS1 hash was even")
           
 
 
@@ -67,7 +67,7 @@ while True:
             ts1socket.settimeout(5)
 
             try:
-                print("TS1 did not time out and is now recieving data over to ts1")
+                print("TS1 did not time out and ls is recieving data")
                 servermessage = ts1socket.recv(10240).decode('utf-8')
                 #we recieve the host name with the ip from ts now we want to send it back to client
 
@@ -80,7 +80,7 @@ while True:
                 ts2socket.settimeout(5)
                 
                 try:
-                    print("TS2 did not timeout and is now recieving the data from TS2")
+                    print("TS2 did not timeout and ls is now recieving the data from TS2")
                     servermessage = ts2socket.recv(10240).decode('utf-8')
                     clientsocket.sendall(servermessage.encode('utf-8'))
                 except socket.timeout:
@@ -91,7 +91,7 @@ while True:
                     clientsocket.sendall(servermessage.encode('utf-8'))
         
         elif temp % 2 == 1:
-            print("sending load to TS2 because of hash")
+            print("sending load to TS2 because of hash was odd")
 
             ts2socket.sendall(data.encode('utf-8'))
             ts2socket.settimeout(5)
