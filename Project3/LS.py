@@ -24,7 +24,8 @@ ts1socket.connect(addy)
 
 
 
-
+ts1counter  = 0
+ts2counter =0
 
 #connecting server ls to ts2
 ts2port = int(sys.argv[5])
@@ -48,6 +49,7 @@ while True:
         temp = hash(data) % 2
 
         if temp % 2 == 0:
+            
 
             print("hash function setting load to TS1 hash was even")
           
@@ -67,12 +69,14 @@ while True:
             ts1socket.settimeout(5)
 
             try:
+                ts1counter+=1
                 print("TS1 did not time out and ls is recieving data")
                 servermessage = ts1socket.recv(10240).decode('utf-8')
                 #we recieve the host name with the ip from ts now we want to send it back to client
 
                 clientsocket.sendall(servermessage.encode('utf-8'))
             except socket.timeout:
+                
                 #case 2: LS doesnt recieve response in timeout window and goes to TS2 for query
                 #TS1 does not respond in time so we try ts2
                 print("TS1 failed to recieve feedback in time and now we will send the job over to TS2")
@@ -80,6 +84,7 @@ while True:
                 ts2socket.settimeout(5)
                 
                 try:
+                    ts2counter+=1
                     print("TS2 did not timeout and ls is now recieving the data from TS2")
                     servermessage = ts2socket.recv(10240).decode('utf-8')
                     clientsocket.sendall(servermessage.encode('utf-8'))
@@ -98,6 +103,7 @@ while True:
             
 
             try:
+                ts2counter+=1
                 print("TS2 did not time out and LS is now recieving")
                 servermessage = ts2socket.recv(10240).decode('utf-8')
                 clientsocket.sendall(servermessage.encode('utf-8'))
@@ -107,6 +113,7 @@ while True:
                 ts1socket.settimeout(5)
 
                 try:
+                    ts1counter+=1
                     print("TS1 sent back info before timeout so it ls recieves data")
                     servermessage = ts1socket.recv(10240).decode('utf-8')
                     clientsocket.sendall(servermessage.encode('utf-8'))
@@ -115,6 +122,8 @@ while True:
                     servermessage = data + " - Error:HOST NOT FOUND"
                     clientsocket.sendall(servermessage.encode('utf-8'))
 
+    print( ts1counter)
+    print(ts2counter)
     clientsocket.close()
 
              
