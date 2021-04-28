@@ -193,16 +193,25 @@ while True:
             temp = searchDNS(DNSList, data)
 
         if temp is None:
+            print("temp is not found so we will ask DNS")
             #host is not found in local dns table call up the domain name server to get ip
             finIP = get_IP(data)
             #got the ip adress send over ip to ls
 
             message = finIP
+            print("got IP from DNS sending: " + message)
             lssocket.sendall(message.encode())
         else: 
+
+            print("temp -> " + temp.IP + "sending over to LS")
             #send over ip to ls
             message =temp.IP
             lssocket.sendall(message.encode())
+
+
+
+
+
 
     lssocket.close()
 

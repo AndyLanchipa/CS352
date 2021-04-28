@@ -17,8 +17,9 @@ try:
 except socket.error as err:
     print('socket open error: {} \n'.format(err))
     exit()
-
-server_addr = (args.server_location, args.rsport)
+print(args.server_location)
+print(args.lsport)
+server_addr = (args.server_location, args.lsport)
 client_sock.connect(server_addr)
 
 #now we need to open both files
