@@ -70,7 +70,7 @@ while True:
                 #we recieve the host name with the ip from ts now we want to send it back to client
 
                 clientsocket.sendall(servermessage.encode('utf-8'))
-            else:
+            else:#case 2: LS doesnt recieve response in timeout window and goes to TS2 for query
                 #TS1 does not respond in time so we try ts2
                 ts2socket.sendall(data.encode('utf-8'))
                 ts2socket.setblocking(0)
@@ -79,7 +79,7 @@ while True:
                 if timeout[0]:
                     servermessage = ts2socket.recv(10240).decode('utf-8')
                     clientsocket.sendall(servermessage.encode('utf-8'))
-                else:
+                else: #case 3:LS doesnt recieve response from any ts1 or ts2 so it sends erros back to client
                     #both ts1 and ts2 time out
                     servermessage = data +" - Error:HOST NOT FOUND"
                     clientsocket.sendall(servermessage.encode('utf-8'))
@@ -88,12 +88,34 @@ while True:
 
             
 
-            #case 2: LS doesnt recieve response in timeout window and goes to TS2 for query
+
 
 
 
         elif temp % 2 == 1:
 
-           #connecting server ls to ts2
-            ts2port = int(sys.argv[5])
+            ts2socket.sendall(data.encode('utf-8'))
+            ts2socket.setblocking(0)
+            timeout = select.select([ts2socket],[],[],5)
+
+            if timeout[0]:
+                servermessage = ts2socket.recv(10240).decode('utf-8')
+                clientsocket.sendall(servermessage.encode('utf-8'))
+            else: 
+                ts1socket.sendall(data.encode('utf-8'))
+                ts1socket.setblocking(0)
+                timeout = select.select([ts2socket],[],[],5)
+
+                if timeout[0]:
+                    servermessage = ts1socket.recv(10240).decode('utf-8')
+                    clientsocket.sendall(servermessage.encode('utf-8'))
+                else: #case 3 neither responded to LS
+                    servermessage = data + " - Error:HOST NOT FOUND"
+                    clientsocket.sendall(servermessage.encode('utf-8'))
+
+
+
+             
+
+           
             
