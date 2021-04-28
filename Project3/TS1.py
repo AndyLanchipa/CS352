@@ -47,14 +47,19 @@ def searchDNS(self, name):
 #this send_udp_message method was found on https://routley.io/posts/hand-writing-dns-messages/ and used by us for the sending and recieving to the udp
 def send_udp_message(message, address, port):
     #message = message.replace(" ","").replace("\n","")
+
+    print(address)
+    print(port)
     server_address = (address, port)
     sock = socket.socket(socket.AF_INET , socket.SOCK_DGRAM)
 
     try:
         sock.sendto(binascii.unhexlify(message), server_address)
         data, _ = sock.recvfrom(4096)
+        print("inside of udp socket adn reciving")
     finally:
         sock.close()
+    print("here returning ascii")
     return binascii.hexlify(data).decode("utf-8")
 
 
@@ -99,6 +104,7 @@ def format_to_ip(hexval):     #currently works for only one IP
 
 
 def get_IP(data):
+    temp = data
     addressArr = data.split(".")
     header = "aaaa01000001000000000000"
     fulldomain = ""
@@ -106,37 +112,40 @@ def get_IP(data):
     while count < len(addressArr):
         fulldomain = fulldomain + str(hex(len(addressArr[count]))[2:]).zfill(2) + convert_address(addressArr[count])
         count += 1
-        message = header + fulldomain + "0000010001"
-        msgSize = len(message)
-        #we are asking google for TS1 and for TS2 using cloudflare
-        response = send_udp_message(message,"8.8.8.8", 546)
-        print("The response is:\t"+response)
+
+    message = header + fulldomain + "0000010001"
+    msgSize = len(message)
+    #we are asking google for TS1 and for TS2 using cloudflare
+    print("calling udp message function")
+    response = send_udp_message(message,"8.8.8.8", 53)
+    print("post udp message function")
+    print("The response is:\t"+response)
             
-        print("Formated hex response:\n"+format_hex(response))  
-        resData = response[msgSize:]
-        finIP = ""
-        counter = int(msgSize)   
+    print("Formated hex response:\n"+format_hex(response))  
+    resData = response[msgSize:]
+    finIP = ""
+    counter = int(msgSize)   
 
-        while counter < len(response):
-            resData = resData[20:]
-            counter += 20
-            size = int(resData[:4],16)*2
+    while counter < len(response):
+        resData = resData[20:]
+        counter += 20
+        size = int(resData[:4],16)*2
 
-            counter += 4
-            resData = resData[4:]
-            data = resData[:size]
-            resData = resData[size:]
-            counter = counter + size
+        counter += 4
+        resData = resData[4:]
+        data = resData[:size]
+        resData = resData[size:]
+        counter = counter + size
 
-            if(size != 8):
-                theIP = "OTHER"
-            else: 
-                theIP = format_to_ip(data)
-            finIP = finIP + theIP +","
+        if(size != 8):
+            theIP = temp + " - " + "Error:HOST NOT FOUND"
+        else: 
+            theIP = format_to_ip(data)
+        finIP = finIP + theIP +","
+    
         
-        
-        finIP = finIP[:-1]
-        return finIP
+    finIP = finIP[:-1]
+    return finIP
 
 
           
@@ -180,7 +189,9 @@ while True:
         print("data: " + data)
 
         if DNSList is None:
-        #need to ask the dns server for its ip 
+            print("DNSList is empty and ")
+            #need to ask the dns server for its ip 
+
             finIP = get_IP(data)
 
             #store host and ip in dns table
@@ -189,24 +200,27 @@ while True:
 
             
         elif DNSList is not None:
+            
 
             temp = searchDNS(DNSList, data)
 
-        if temp is None:
-            print("temp is not found so we will ask DNS")
-            #host is not found in local dns table call up the domain name server to get ip
-            finIP = get_IP(data)
-            #got the ip adress send over ip to ls
+            if temp is None:
+                print("temp is not found so we will ask DNS")
+                #host is not found in local dns table call up the domain name server to get ip
+                print("here before get ip")
+                finIP = get_IP(data)
+                print("here past")
+                #got the ip adress send over ip to ls
 
-            message = finIP
-            print("got IP from DNS sending: " + message)
-            lssocket.sendall(message.encode())
-        else: 
+                message = finIP
+                print("got IP from DNS sending: " + message)
+                lssocket.sendall(message.encode())
+            else: 
 
-            print("temp -> " + temp.IP + "sending over to LS")
-            #send over ip to ls
-            message =temp.IP
-            lssocket.sendall(message.encode())
+                print("temp -> " + temp.IP + "sending over to LS")
+                #send over ip to ls
+                message =temp.IP
+                lssocket.sendall(message.encode())
 
 
 
