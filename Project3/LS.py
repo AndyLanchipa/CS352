@@ -15,14 +15,11 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(server_address)
 sock.listen(1)
 
-
- #connecting server ls to ts2
-
 ts1port = int(sys.argv[3])
-ts1hostname = int(sys.argv[2])
+ts1hostname = sys.argv[2]
 addy =(ts1hostname,ts1port)
 ts1socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ts1socket.connect()
+ts1socket.connect(addy)
 
 
 
@@ -31,14 +28,15 @@ ts1socket.connect()
 
 #connecting server ls to ts2
 ts2port = int(sys.argv[5])
-ts2hostname = int(sys.argv[4])
-addy =(ts2hostname,ts2port)
+ts2hostname = sys.argv[4]
+addy2 =(ts2hostname,ts2port)
 ts2socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-ts2socket.connect()
+ts2socket.connect(addy2)
 
 while True:
+    clientsocket,address = sock.accept()
     while True:
-        clientsocket,address = sock.accept()
+     
 
         data = clientsocket.recv(10240).decode()
         if not data: 
@@ -113,7 +111,7 @@ while True:
                     servermessage = data + " - Error:HOST NOT FOUND"
                     clientsocket.sendall(servermessage.encode('utf-8'))
 
-
+    clientsocket.close()
 
              
 
