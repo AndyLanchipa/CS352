@@ -61,29 +61,30 @@ while True:
             ts1socket.sendall(data.encode('utf-8'))
 
             #i think this sets up the time out https://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
-            ts1socket.setblocking(0)
+            #ts1socket.setblocking(0)
 
-            timeout = select.select([ts1socket],[],[],5)
+            #timeout = select.select([ts1socket],[],[],5)
+            ts1socket.settimeout(5)
 
-            if timeout[0]:
-
+            try:
                 print("TS1 did not time out and is now recieving data over to ts1")
                 servermessage = ts1socket.recv(10240).decode('utf-8')
                 #we recieve the host name with the ip from ts now we want to send it back to client
 
                 clientsocket.sendall(servermessage.encode('utf-8'))
-            else:#case 2: LS doesnt recieve response in timeout window and goes to TS2 for query
+            except socket.timeout:
+                #case 2: LS doesnt recieve response in timeout window and goes to TS2 for query
                 #TS1 does not respond in time so we try ts2
                 print("TS1 failed to recieve feedback in time and now we will send the job over to TS2")
                 ts2socket.sendall(data.encode('utf-8'))
-                ts2socket.setblocking(0)
-                timeout = select.select([ts2socket],[],[],5)
-
-                if timeout[0]:
+                ts2socket.settimeout(5)
+                
+                try:
                     print("TS2 did not timeout and is now recieving the data from TS2")
                     servermessage = ts2socket.recv(10240).decode('utf-8')
                     clientsocket.sendall(servermessage.encode('utf-8'))
-                else: #case 3:LS doesnt recieve response from any ts1 or ts2 so it sends erros back to client
+                except socket.timeout:
+                    #case 3:LS doesnt recieve response from any ts1 or ts2 so it sends erros back to client
                     #both ts1 and ts2 time out
                     print("both TS1 and TS2 time out sending back error host not found to client")
                     servermessage = data +" - Error:HOST NOT FOUND"
@@ -93,24 +94,23 @@ while True:
             print("sending load to TS2 because of hash")
 
             ts2socket.sendall(data.encode('utf-8'))
-            ts2socket.setblocking(0)
-            timeout = select.select([ts2socket],[],[],5)
+            ts2socket.settimeout(5)
+            
 
-            if timeout[0]:
+            try:
                 print("TS2 did not time out and LS is now recieving")
                 servermessage = ts2socket.recv(10240).decode('utf-8')
                 clientsocket.sendall(servermessage.encode('utf-8'))
-            else: 
+            except socket.timeout: 
                 print("TS2 failed to send back before time out and now we are using TS1 to send data")
                 ts1socket.sendall(data.encode('utf-8'))
-                ts1socket.setblocking(0)
-                timeout = select.select([ts2socket],[],[],5)
+                ts1socket.settimeout(5)
 
-                if timeout[0]:
+                try:
                     print("TS1 sent back info before timeout so it ls recieves data")
                     servermessage = ts1socket.recv(10240).decode('utf-8')
                     clientsocket.sendall(servermessage.encode('utf-8'))
-                else: #case 3 neither responded to LS
+                except socket.timeout: #case 3 neither responded to LS
                     print("both TS1 and TS2 timedout")
                     servermessage = data + " - Error:HOST NOT FOUND"
                     clientsocket.sendall(servermessage.encode('utf-8'))
