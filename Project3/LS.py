@@ -46,7 +46,8 @@ while True:
         #hash queries so that they go to the same server and the load is balanced equally and same queries go 
         #go to the same servers
         #this splits the load evenly
-        temp = hash(data) % 2
+        temp = hash(data)
+        
 
         if temp % 2 == 0:
             

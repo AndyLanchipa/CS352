@@ -1,7 +1,7 @@
 import binascii
 import socket
 import sys
-
+import time
 class node:
     def __init__(self, Host, IP):
         self.Host = Host
@@ -21,7 +21,7 @@ def add_DNS(self,data,IP):
     Node = node(data,IP)
     if self.head is None:
         self.head = Node
-        return self.head
+        return 
     ptr = self.head
 
     while ptr.next:
@@ -29,16 +29,18 @@ def add_DNS(self,data,IP):
 
     ptr.next =Node
 
-    return self.head
 
 def searchDNS(self, name):
 
 
     temp = self.head
+    print("here before loop of dns")
     while temp is not None:
+        print("searching dns:" + temp.Host)
 
         if temp.Host.lower() == name.lower():
-            return temp.head
+            print(temp.IP)
+            return temp.IP
         temp = temp.next
 
     return None    
@@ -176,17 +178,21 @@ while True:
         if not data:
             break
         print("data: " + data)
+        
 
-        if DNSList is None:
+        if DNSList.head is None:
         #need to ask the dns server for its ip 
             finIP = get_IP(data)
 
             #store host and ip in dns table
+            
 
-            DNSList.head = add_DNS(DNSList,data,finIP)
+            DNSList.head =  node(data,finIP)
+            print("here setting head")
+            
 
             
-        elif DNSList is not None:
+        if DNSList.head is not None:
 
             temp = searchDNS(DNSList, data)
 
@@ -196,15 +202,19 @@ while True:
                 print("here before get ip")
                 finIP = get_IP(data)
                 print("here past")
+
+                DNSList.head = add_DNS(DNSList,data,finIP)
                 #got the ip adress send over ip to ls
 
                 message = finIP
                 print("got IP from DNS sending: " + message)
+                
                 lssocket.sendall(message.encode())
             else: 
-                print("temp -> " + temp.IP + "sending over to LS")
+                print( temp)
                 #send over ip to ls
-                message =temp.IP
+                message =temp
+                
                 lssocket.sendall(message.encode())
 
     lssocket.close()
