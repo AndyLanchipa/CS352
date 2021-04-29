@@ -128,6 +128,7 @@ while True:
                 servermessage = ts2socket.recv(10240).decode('utf-8')
                 clientsocket.sendall(servermessage.encode('utf-8'))
             except socket.timeout: 
+                ts1status =False
                 print("TS2 failed to send back before time out and now we are using TS1 to send data")
                 ts1socket.sendall(data.encode('utf-8'))
                 ts1socket.settimeout(5)
@@ -138,7 +139,10 @@ while True:
                     servermessage = ts1socket.recv(10240).decode('utf-8')
                     clientsocket.sendall(servermessage.encode('utf-8'))
                 except socket.timeout: #case 3 neither responded to LS
+                    
                     print("both TS1 and TS2 timedout")
+                    ts2status = False
+                    ts1status = False
                     servermessage = data + " - Error:HOST NOT FOUND"
                     clientsocket.sendall(servermessage.encode('utf-8'))
 
