@@ -33,10 +33,27 @@ ts2hostname = sys.argv[4]
 addy2 =(ts2hostname,ts2port)
 ts2socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 ts2socket.connect(addy2)
+ts1status = True
+ts2status = True
 
 while True:
     clientsocket,address = sock.accept()
     while True:
+
+        if ts1status is False:
+            #reestablish connection
+            ts1socket.close()
+            addy =(ts1hostname,ts1port)
+            ts1socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ts1socket.connect(addy)
+            ts1status = True
+        
+        if ts2status is False:
+            ts2socket.close()
+            addy2 =(ts2hostname,ts2port)
+            ts2socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+            ts2socket.connect(addy2)
+
      
 
         data = clientsocket.recv(10240).decode()
@@ -77,9 +94,9 @@ while True:
 
                 clientsocket.sendall(servermessage.encode('utf-8'))
             except socket.timeout:
-                
                 #case 2: LS doesnt recieve response in timeout window and goes to TS2 for query
                 #TS1 does not respond in time so we try ts2
+                ts1status = False
                 print("TS1 failed to recieve feedback in time and now we will send the job over to TS2")
                 ts2socket.sendall(data.encode('utf-8'))
                 ts2socket.settimeout(5)
@@ -92,6 +109,8 @@ while True:
                 except socket.timeout:
                     #case 3:LS doesnt recieve response from any ts1 or ts2 so it sends erros back to client
                     #both ts1 and ts2 time out
+                    ts2status = False
+                    ts1status = False
                     print("both TS1 and TS2 time out sending back error host not found to client")
                     servermessage = data +" - Error:HOST NOT FOUND"
                     clientsocket.sendall(servermessage.encode('utf-8'))
