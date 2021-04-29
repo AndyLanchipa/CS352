@@ -189,10 +189,12 @@ while True:
 
             DNSList.head =  node(data,finIP)
             print("here setting head")
+            message = finIP
+            lssocket.sendall(message.encode())
             
 
             
-        if DNSList.head is not None:
+        elif DNSList.head is not None:
 
             temp = searchDNS(DNSList, data)
 
